@@ -35,9 +35,43 @@ namespace SupplyChain.Relational
             }
         }
 
-        public void Seed()
+        public void CreateSchema()
         {
             CreateDatabaseIfNotExists();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string createSupplierTableQuery = @"
+                    IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Supplier' and xtype='U')
+                    BEGIN
+                        CREATE TABLE Supplier (
+                            Id INT PRIMARY KEY IDENTITY,
+                            Name VARCHAR(255)
+                        );
+                    END";
+
+                using (SqlCommand command = new SqlCommand(createSupplierTableQuery, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                string createSupplyChainTableQuery = @"
+                    IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='SupplyChain' and xtype='U')
+                    BEGIN
+                        CREATE TABLE SupplyChain (
+                            Id INT PRIMARY KEY IDENTITY,
+                            Supplier INT,
+                            Consumer INT
+                        );
+                    END";
+
+                using (SqlCommand command = new SqlCommand(createSupplyChainTableQuery, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
         }
     }
 }

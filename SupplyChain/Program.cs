@@ -4,4 +4,4 @@ string sqlConnectionString = "Server=172.30.57.125,1433;Database=SupplyChain;Use
 
 var sqlSeeder = new RelationalDataSeeder(sqlConnectionString);
 
-sqlSeeder.Seed();
+sqlSeeder.CreateSchema();
