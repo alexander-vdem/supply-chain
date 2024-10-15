@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Models;
 
 namespace SupplyChain.Relational;
@@ -8,23 +9,16 @@ public static class DataSeed
     {
         context.Database.EnsureCreated();
 
-        if (!context.Products.Any())
-        {
-            context.Products.RemoveRange(context.Products);
-            context.SaveChanges();
-        }
-
-        if (!context.Suppliers.Any())
-        {
-            context.Suppliers.RemoveRange(context.Suppliers);
-            context.SaveChanges();
-        }
-        
         var imaginaryElectronics = new Supplier { Name = "Imaginary Electronics" };
         var acme                 = new Supplier { Name = "Acme" };
-        var honest            = new Supplier { Name = "Honest Inc" };
+        var honest               = new Supplier { Name = "Honest Inc" };
 
-        context.Suppliers.AddRange(imaginaryElectronics, acme);
+        var suppliers = new List<Supplier> {imaginaryElectronics, acme, honest};
+        if (!suppliers.All(s => context.Suppliers.Contains(s)))
+        {
+            context.Suppliers.AddRange(suppliers);
+            context.SaveChanges();
+        }
 
         var complexComputer = new Product { Name = "Complex Computer", Supplier = imaginaryElectronics };
         
@@ -47,7 +41,8 @@ public static class DataSeed
         var resistor                = new Product { Name = "Resistor",                  ParentProduct = hardDriveCircuitBoard,   Supplier = acme };
         var diode                   = new Product { Name = "Diode",                     ParentProduct = hardDriveCircuitBoard,   Supplier = honest };
 
-        context.Products.AddRange(
+        var testProducts = new List<Product>
+        {
             complexComputer, 
             keyboard, 
             buton, 
@@ -63,8 +58,13 @@ public static class DataSeed
             hardElectronicComponent, 
             hardDriveCircuitBoard, 
             resistor, 
-            diode);
-        
-        context.SaveChanges();
+            diode
+        };
+
+        if (!testProducts.All(p => context.Products.Contains(p)))
+        {
+            context.Products.AddRange(testProducts);
+            context.SaveChanges();
+        }
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Relational;
 using SupplyChain.Relational;
 
-string sqlConnectionString = "Server=172.30.57.125;Database=SupplyChain;User Id=sa;Password=YourPassword123;TrustServerCertificate=true";
+string sqlConnectionString = "Server=172.30.51.255;Database=SupplyChain;User Id=sa;Password=YourPassword123;TrustServerCertificate=true";
 
 var serviceProvider = new ServiceCollection()
     .AddDbContext<SupplyChainDatabaseContext>(options =>
@@ -16,10 +16,12 @@ var databaseContext = serviceProvider.GetRequiredService<SupplyChainDatabaseCont
 
 DataSeed.SeedData(databaseContext);
 
-Stopwatch  stopwatch = new Stopwatch();
+var  stopwatch = new Stopwatch();
 stopwatch.Start();
 
-var result = BomStore.GetPartsUnderComplexComputerBySupplier(databaseContext,"Complex Computer", "Honest Inc");
+var bomStore = new BomStore(databaseContext);
+
+var result = bomStore.GetSubProductsBySupplier("Complex Computer", "Honest Inc");
 stopwatch.Stop();
 
 Console.WriteLine($"Entity framework executed in: {stopwatch.ElapsedMilliseconds} ms");
@@ -27,7 +29,7 @@ Console.WriteLine($"Entity framework executed in: {stopwatch.ElapsedMilliseconds
 stopwatch.Restart();
 stopwatch.Start();
 
-var resultCTE = BomStore.GetPartsUnderComplexComputerCTE(databaseContext,"Complex Computer", "Honest Inc");
+var resultCTE = bomStore.GetSubProductsBySupplierCTE("Complex Computer", "Honest Inc");
 stopwatch.Stop();
 
 Console.WriteLine($"CTE executed in: {stopwatch.ElapsedMilliseconds} ms");

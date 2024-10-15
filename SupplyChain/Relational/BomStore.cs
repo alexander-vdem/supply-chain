@@ -4,11 +4,18 @@ using SupplyChain.Relational;
 
 namespace Relational;
 
-public static class BomStore
+public class BomStore
 {
-    public static List<Product> GetPartsUnderComplexComputerBySupplier(SupplyChainDatabaseContext context, string productName, string supplierName)
+    public BomStore(SupplyChainDatabaseContext context)
     {
-        var complexComputer = context.Products
+        _context = context;
+    }
+
+    private SupplyChainDatabaseContext _context;
+
+    public List<Product> GetSubProductsBySupplier(string productName, string supplierName)
+    {
+        var complexComputer = _context.Products
             .FirstOrDefault(p => p.Name == productName);
 
         if (complexComputer == null)
@@ -16,14 +23,14 @@ public static class BomStore
             return new List<Product>();
         }
 
-        var supplierId = context.Suppliers.Where(s => s.Name == supplierName).Select(s => s.Id).FirstOrDefault();
+        var supplierId = _context.Suppliers.Where(s => s.Name == supplierName).Select(s => s.Id).FirstOrDefault();
 
         var result = new List<Product>();
-        GetPartsRecursive(context, complexComputer.Id, supplierId, result);
+        GetPartsRecursive( complexComputer.Id, supplierId, result);
         return result;
     }
 
-    public static List<Product> GetPartsUnderComplexComputerCTE(SupplyChainDatabaseContext context, string productName, string supplierName)
+    public List<Product> GetSubProductsBySupplierCTE(string productName, string supplierName)
     {
         var query = @"
         WITH ProductHierarchy AS (
@@ -40,13 +47,13 @@ public static class BomStore
         INNER JOIN Suppliers s ON ph.SupplierId = s.Id
         WHERE s.Name = {1}";
 
-        var products = context.Products.FromSqlRaw(query, productName, supplierName).ToList();
+        var products = _context.Products.FromSqlRaw(query, productName, supplierName).ToList();
         return products;
     }
 
-    private static void GetPartsRecursive(SupplyChainDatabaseContext context, int parentId, int supplierId, List<Product> result)
+    private void GetPartsRecursive(int parentId, int supplierId, List<Product> result)
     {
-        var childParts = context.Products
+        var childParts = _context.Products
             .Where(p => p.ParentProductId == parentId)
             .ToList();
 
@@ -56,7 +63,7 @@ public static class BomStore
             {
                 result.Add(child);
             }
-            GetPartsRecursive(context, child.Id, supplierId, result);
+            GetPartsRecursive(child.Id, supplierId, result);
         }
     }
 }
