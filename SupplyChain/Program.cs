@@ -15,6 +15,7 @@ var serviceProvider = new ServiceCollection()
 var databaseContext = serviceProvider.GetRequiredService<SupplyChainDatabaseContext>();
 
 DataSeed.SeedData(databaseContext);
+DataSeed.SeedLargeVolumeData(databaseContext);
 
 var  stopwatch = new Stopwatch();
 stopwatch.Start();
