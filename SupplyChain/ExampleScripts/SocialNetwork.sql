@@ -1,87 +1,58 @@
--- Create the database
-CREATE DATABASE SocialNetwork;
-
--- Use the database
-USE SocialNetwork;
-
--- Create the Employers table
-CREATE TABLE Employers (
-    EmployerID INT PRIMARY KEY IDENTITY(1,1),
-    CompanyName NVARCHAR(100)
+-- Table: Person
+CREATE TABLE Person (
+    PersonID INT PRIMARY KEY,  -- Primary Key
+    FirstName NVARCHAR(255) NOT NULL,  -- Unicode string for first name
+    LastName NVARCHAR(255) NOT NULL,  -- Unicode string for last name
+    Handle NVARCHAR(255)  -- Unicode string for handle/username
 );
 
--- Create the People table
-CREATE TABLE People (
-    PersonID INT PRIMARY KEY IDENTITY(1,1),
-    FirstName NVARCHAR(50),
-    LastName NVARCHAR(50)
+-- Table: Employer
+CREATE TABLE Employer (
+    EmployerID INT PRIMARY KEY,  -- Primary Key
+    OrganizationName NVARCHAR(255) NOT NULL,  -- Unicode string for organization name
+    FoundingDate DATE  -- Date type for founding date
 );
 
--- Create the Employee table to represent the relationship between People and Employers
+-- Table: Employee
 CREATE TABLE Employee (
-    PersonID INT,
-    EmployerID INT,
-    PRIMARY KEY (PersonID, EmployerID),
-    FOREIGN KEY (PersonID) REFERENCES People(PersonID),
-    FOREIGN KEY (EmployerID) REFERENCES Employers(EmployerID)
+    ContractID INT IDENTITY(1,1) PRIMARY KEY,  -- Auto-incremented primary key
+    PersonID INT NOT NULL,  -- Foreign Key
+    EmployerID INT NOT NULL,  -- Foreign Key
+    IsCurrent BIT NOT NULL,  -- Boolean type for current status (1/0)
+    Employee_Since DATE,  -- Date type for employment start date
+    CONSTRAINT FK_Employee_Person FOREIGN KEY (PersonID) REFERENCES Person(PersonID),
+    CONSTRAINT FK_Employee_Employer FOREIGN KEY (EmployerID) REFERENCES Employer(EmployerID)
 );
 
--- Create the Connections table
+-- Table: Connections
 CREATE TABLE Connections (
-    FollowerID INT,
-    FolloweeID INT,
-    PRIMARY KEY (FollowerID, FolloweeID),
-    FOREIGN KEY (FollowerID) REFERENCES People(PersonID),
-    FOREIGN KEY (FolloweeID) REFERENCES People(PersonID)
+    FollowerID INT NOT NULL,  -- Foreign Key
+    FolloweeID INT NOT NULL,  -- Foreign Key
+    CONSTRAINT FK_Connections_Follower FOREIGN KEY (FollowerID) REFERENCES Person(PersonID),
+    CONSTRAINT FK_Connections_Followee FOREIGN KEY (FolloweeID) REFERENCES Person(PersonID),
+    PRIMARY KEY (FollowerID, FolloweeID)  -- Composite Primary Key
 );
 
--- Insert data into Employers table
-INSERT INTO Employers (CompanyName) VALUES ('Acme Corp');
-INSERT INTO Employers (CompanyName) VALUES ('Globex Inc');
-INSERT INTO Employers (CompanyName) VALUES ('Initech');
+-- Table: Post
+CREATE TABLE Post (
+    PostID INT PRIMARY KEY,  -- Primary Key
+    PostContent NVARCHAR(MAX)  -- Unicode string for post content (large text)
+);
 
--- Insert data into People table
-INSERT INTO People (FirstName, LastName) VALUES ('John', 'Doe');
-INSERT INTO People (FirstName, LastName) VALUES ('Jane', 'Smith');
-INSERT INTO People (FirstName, LastName) VALUES ('Alice', 'Johnson');
-INSERT INTO People (FirstName, LastName) VALUES ('Bob', 'Brown');
-INSERT INTO People (FirstName, LastName) VALUES ('Charlie', 'Davis');
-INSERT INTO People (FirstName, LastName) VALUES ('Diana', 'Miller');
-INSERT INTO People (FirstName, LastName) VALUES ('Eve', 'Wilson');
-INSERT INTO People (FirstName, LastName) VALUES ('Frank', 'Moore');
-INSERT INTO People (FirstName, LastName) VALUES ('Grace', 'Taylor');
-INSERT INTO People (FirstName, LastName) VALUES ('Hank', 'Anderson');
+-- Table: PersonPosts
+CREATE TABLE PersonPosts (
+    PostID INT NOT NULL,  -- Foreign Key
+    PersonID INT NOT NULL,  -- Foreign Key
+    CONSTRAINT FK_PersonPosts_Post FOREIGN KEY (PostID) REFERENCES Post(PostID),
+    CONSTRAINT FK_PersonPosts_Person FOREIGN KEY (PersonID) REFERENCES Person(PersonID),
+    PRIMARY KEY (PostID, PersonID)  -- Composite Primary Key
+);
 
--- Insert data into Employee table
-INSERT INTO Employee (PersonID, EmployerID) VALUES (1, 1); -- John works for Acme Corp
-INSERT INTO Employee (PersonID, EmployerID) VALUES (2, 1); -- Jane works for Acme Corp
-INSERT INTO Employee (PersonID, EmployerID) VALUES (3, 2); -- Alice works for Globex Inc
-INSERT INTO Employee (PersonID, EmployerID) VALUES (4, 2); -- Bob works for Globex Inc
-INSERT INTO Employee (PersonID, EmployerID) VALUES (5, 3); -- Charlie works for Initech
-INSERT INTO Employee (PersonID, EmployerID) VALUES (6, 3); -- Diana works for Initech
-INSERT INTO Employee (PersonID, EmployerID) VALUES (7, 1); -- Eve works for Acme Corp
-INSERT INTO Employee (PersonID, EmployerID) VALUES (8, 2); -- Frank works for Globex Inc
-INSERT INTO Employee (PersonID, EmployerID) VALUES (9, 3); -- Grace works for Initech
-INSERT INTO Employee (PersonID, EmployerID) VALUES (10, 1); -- Hank works for Acme Corp
-
--- Insert data into Connections table
-INSERT INTO Connections (FollowerID, FolloweeID) VALUES (1, 2); -- John follows Jane
-INSERT INTO Connections (FollowerID, FolloweeID) VALUES (2, 3); -- Jane follows Alice
-INSERT INTO Connections (FollowerID, FolloweeID) VALUES (3, 4); -- Alice follows Bob
-INSERT INTO Connections (FollowerID, FolloweeID) VALUES (4, 5); -- Bob follows Charlie
-INSERT INTO Connections (FollowerID, FolloweeID) VALUES (5, 6); -- Charlie follows Diana
-INSERT INTO Connections (FollowerID, FolloweeID) VALUES (6, 7); -- Diana follows Eve
-INSERT INTO Connections (FollowerID, FolloweeID) VALUES (7, 8); -- Eve follows Frank
-INSERT INTO Connections (FollowerID, FolloweeID) VALUES (8, 9); -- Frank follows Grace
-INSERT INTO Connections (FollowerID, FolloweeID) VALUES (9, 10); -- Grace follows Hank
-INSERT INTO Connections (FollowerID, FolloweeID) VALUES (10, 1); -- Hank follows John
-
-DECLARE @CompanyName NVARCHAR(100) = 'Acme Corp'; -- Company name
-
-SELECT DISTINCT p2.*
-FROM Connections f1
-JOIN Connections f2 ON f1.FolloweeID = f2.FollowerID
-JOIN People p2 ON f2.FolloweeID = p2.PersonID
-JOIN Employee e ON p2.PersonID = e.PersonID
-JOIN Employers em ON e.EmployerID = em.EmployerID
-WHERE em.CompanyName = @CompanyName;
+-- Table: EmployerPosts
+CREATE TABLE EmployerPosts (
+    EmployerID INT NOT NULL,  -- Foreign Key
+    PostID INT NOT NULL,  -- Foreign Key
+    CONSTRAINT FK_EmployerPosts_Employer FOREIGN KEY (EmployerID) REFERENCES Employer(EmployerID),
+    CONSTRAINT FK_EmployerPosts_Post FOREIGN KEY (PostID) REFERENCES Post(PostID),
+    PRIMARY KEY (EmployerID, PostID)  -- Composite Primary Key
+);

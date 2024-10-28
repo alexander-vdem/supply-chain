@@ -1,0 +1,51 @@
+erDiagram
+    Person {
+        int PersonID
+        string FirstName
+        string LastName
+        string Handle
+    }
+
+    Employer {
+        int EmployerID 
+        string OrganizationName
+        date FoundingDate
+    }                                        
+
+    Employee {
+        int ContractID
+        int PersonID
+        int EmployerID
+        bool IsCurrent
+        date Employee_Since
+    }
+
+    Connections {
+        int FollowerID 
+        int FolloweeID 
+    }
+
+    Post {
+        int PostID
+        string PostContent
+    }
+
+    PersonPosts {
+        int PostID
+        int PersonID
+    }
+
+    EmployerPosts {
+        int EmployerID 
+        int PostID 
+    }
+    
+    Person ||--o{ Connections: "PersonID"
+    Person ||--o{ Connections: "FollowerID"
+    Person ||--o{ PersonPosts: ""
+
+    Post ||--|| PersonPosts: ""
+    Post ||--|| EmployerPosts: ""
+
+    Person ||--|| Employee : ""
+    Employer ||--o{ Employee : ""

@@ -1,0 +1,47 @@
+erDiagram
+
+    Product {
+        int ProductID
+        string Name
+        string CatalogNumber
+        int ParentProductID
+        int ManufacturingOrganizationID
+    }
+
+    ProductBom{
+        int ProductBomID
+        int ProductID
+        int BomVersion
+    }
+
+    BomItems{
+        int BomID
+        int ProductID
+        int ParentProductID
+        int SubstituteProductID                
+    }
+
+    Organization {
+        int OrganizationID
+        string Name
+        string TaxNumber
+    }
+
+    OrganizationTradeType {
+        int OrganizationID
+        int OrganizationTradeTypeID
+    }
+
+    TradeType {
+        int TradeTypeID
+        string TradeTypeName
+    }
+
+    Product ||--|| ProductBom : "Has"
+    Product ||--|{ BomItems : "Product" 
+    Product ||--|{ BomItems : "Is Parent of" 
+    Product ||--|{ BomItems : "Can be substituted by" 
+    ProductBom ||--|{ BomItems : "Enumerates" 
+    Product }|--|| Organization : "Produced by"
+    Organization ||--|{ OrganizationTradeType : "Categorized as"
+    OrganizationTradeType }|--|| TradeType : "Type of Trade"

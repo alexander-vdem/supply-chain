@@ -1,0 +1,52 @@
+erDiagram
+    Person {
+        int PersonID PK
+        nvarchar FirstName
+        nvarchar LastName
+        nvarchar Handle
+    }
+
+    Employer {
+        int EmployerID PK
+        nvarchar OrganizationName
+        date FoundingDate
+    }                                        
+
+    Employee {
+        int ContractID PK
+        int PersonID FK
+        int EmployerID FK
+        bit IsCurrent
+        date Employee_Since
+    }
+
+    Connections {
+        int FollowerID PK, FK
+        int FolloweeID PK, FK
+    }
+
+    Post {
+        int PostID PK
+        nvarchar PostContent
+    }
+
+    PersonPosts {
+        int PostID PK, FK
+        int PersonID PK, FK
+    }
+
+    EmployerPosts {
+        int EmployerID PK, FK
+        int PostID PK, FK
+    }
+    
+    Person ||--o{ Connections: "FollowerID"
+    Person ||--o{ Connections: "FolloweeID"
+    Person ||--o{ PersonPosts: ""
+
+    Post ||--|| PersonPosts: ""
+    Post ||--|| EmployerPosts: ""
+
+    Person ||--|| Employee : ""
+    Employer ||--o{ Employee : ""
+    Employer ||--o{ EmployerPosts : ""

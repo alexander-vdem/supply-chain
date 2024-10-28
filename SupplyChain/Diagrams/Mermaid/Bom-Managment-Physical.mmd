@@ -1,0 +1,47 @@
+erDiagram
+
+    Product {
+        int ProductID PK 
+        nvarchar(255) Name
+        nvarchar(50) CatalogNumber "Uniqueness constraint with ManufacturingOrganizationID"
+        int ManufacturingOrganizationID FK "Uniqueness constraint with CatalogNumber"
+    }
+
+    ProductBom{
+        int BomID PK
+        int ProductID FK "References ProductID"
+        int BomVersion  "Not NULL                                         "
+    }
+
+    BomItems{
+        int BomID PK, FK
+        int ProductID FK, FK 
+        int ParentProductID FK 
+        int SubstituteProductID FK "Nullable"
+    }
+
+    Organization {
+        int OrganizationID PK
+        nvarchar(255) Name
+        nvarchar(50) TaxNumber "Unique"
+    }
+
+    OrganizationTradeType {
+        int OrganizationID FK 
+        int OrganizationTradeTypeID FK 
+    }
+
+    TradeType {
+        int TradeTypeID PK
+        nvarchar(100) TradeTypeName
+    }
+
+    Product ||--|| ProductBom : "Has"
+    Product ||--|{ BomItems : "Product" 
+    Product ||--|{ BomItems : "Is Parent of" 
+    Product ||--|{ BomItems : "Can be substituted by" 
+    ProductBom ||--|{ BomItems : "Enumerates" 
+    Product }|--|| Organization : "Produced by"
+    Organization ||--|{ OrganizationTradeType : "Categorized as"
+    OrganizationTradeType }|--|| TradeType : "Type of Trade"
+                      
