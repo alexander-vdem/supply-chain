@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Relational;
 using SupplyChain.Relational;
 
-string sqlConnectionString = "Server=172.30.51.255;Database=SupplyChain;User Id=sa;Password=YourPassword123;TrustServerCertificate=true";
+string sqlConnectionString = "Server=172.17.101.5;Database=SupplyChain;User Id=sa;Password=YourPassword123;TrustServerCertificate=true";
 
 var serviceProvider = new ServiceCollection()
     .AddDbContext<SupplyChainDatabaseContext>(options =>
