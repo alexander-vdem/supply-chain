@@ -8,6 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ExampleScripts\Cypher\Import\ProductRelationships.cypher" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="ExampleScripts\Cypher\Import\ProductRelationships.cypher" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SupplyChain", "SupplyChain\SupplyChain.csproj", "{4549E69C-0D24-48B2-89F9-35CDF5F5D47C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvSeeder", "CsvSeeder\CsvSeeder.csproj", "{D86E2E1F-576B-4ED7-B791-82846FD17412}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{4549E69C-0D24-48B2-89F9-35CDF5F5D47C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4549E69C-0D24-48B2-89F9-35CDF5F5D47C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4549E69C-0D24-48B2-89F9-35CDF5F5D47C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D86E2E1F-576B-4ED7-B791-82846FD17412}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D86E2E1F-576B-4ED7-B791-82846FD17412}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D86E2E1F-576B-4ED7-B791-82846FD17412}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D86E2E1F-576B-4ED7-B791-82846FD17412}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
